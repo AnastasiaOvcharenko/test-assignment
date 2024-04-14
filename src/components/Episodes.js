@@ -26,7 +26,7 @@ function Episodes({ season }) {
       setIsLoading(true);
       try {
         const data = await fetchWithToken(
-          `season?page=${page}&limit=3&movieId=${currentMovie.id}&number=${season}`
+          `v1.4/season?page=${page}&limit=3&movieId=${currentMovie.id}&number=${season}`
         );
         setEpisodes(data.docs[0].episodes);
         console.log(data.docs[0].episodes);

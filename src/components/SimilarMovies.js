@@ -42,7 +42,6 @@ function SimilarMovies() {
         }}
       >
         <h1 className="primary">Похожие фильмы</h1>
-        {/* {isLoading && <h1>Loading...</h1>} */}
         <div
           style={{
             display: "flex",

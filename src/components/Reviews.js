@@ -27,7 +27,7 @@ function Reviews() {
         setIsLoading(true);
         try {
           const data = await fetchWithToken(
-            `review?page=${page}&limit=${limit}&movieId=${currentMovie.id}`
+            `v1.4/review?page=${page}&limit=${limit}&movieId=${currentMovie.id}`
           );
           setReviews(data.docs);
           setTotalReviews(data.total);

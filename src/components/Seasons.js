@@ -16,7 +16,7 @@ function Seasons() {
       setIsLoading(true);
       try {
         const data = await fetchWithToken(
-          `season?page=1&limit=250&movieId=${currentMovie.id}`
+          `v1.4/season?page=1&limit=250&movieId=${currentMovie.id}`
         );
         setTotalSeasons(data.total);
       } catch {

@@ -69,7 +69,8 @@ function useSearch() {
 }
 
 async function fetchWithToken(line) {
-  const res = await fetch(`https://api.kinopoisk.dev/v1.4/${line}`, {
+  console.log(`https://api.kinopoisk.dev/${line}`);
+  const res = await fetch(`https://api.kinopoisk.dev/${line}`, {
     method: "GET",
     headers: {
       "X-API-KEY": process.env.REACT_APP_TOKEN,

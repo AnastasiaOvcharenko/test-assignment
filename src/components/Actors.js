@@ -26,7 +26,7 @@ function Actors() {
         setIsLoading(true);
         try {
           const data = await fetchWithToken(
-            `person?page=${page}&limit=${limit}&movies.id=${currentMovie.id}&movies.enProfession=actor`
+            `v1.4/person?page=${page}&limit=${limit}&movies.id=${currentMovie.id}&movies.enProfession=actor`
           );
           setActors(data.docs);
           setTotalActors(data.total);

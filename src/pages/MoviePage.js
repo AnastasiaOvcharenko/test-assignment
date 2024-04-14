@@ -20,7 +20,7 @@ function MoviePage() {
       const fetchMovieData = async function () {
         dispatch({ type: "loading" });
         try {
-          const data = await fetchWithToken(`movie/${id}`);
+          const data = await fetchWithToken(`v1.4/movie/${id}`);
           dispatch({ type: "movieData/loaded", payload: data });
         } catch {
           dispatch({

@@ -72,6 +72,10 @@ function MovieInfo() {
           <p>
             Жанры: {currentMovie?.genres?.map((genre) => genre.name).join(", ")}
           </p>
+          <p>
+            Страны:{" "}
+            {currentMovie?.countries?.map((country) => country.name).join(", ")}
+          </p>
           <p>Год выпуска: {currentMovie.year}</p>
           {currentMovie.ageRating && (
             <p>Ограничение: {currentMovie.ageRating}+</p>

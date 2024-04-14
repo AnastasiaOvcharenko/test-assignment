@@ -7,17 +7,10 @@ import { useSearchParams } from "react-router-dom";
 
 function Header() {
   let [searchParams, setSearchParams] = useSearchParams();
-  // https://api.kinopoisk.dev/v1.4/movie?page=1&limit=10&year=2004-2005&ageRating=12-18&countries.name=%21%D0%A4%D1%80%D0%B0%D0%BD%D1%86%D0%B8%D1%8F
-  // query дебаунсом записывать в searchParams, считывать оттуда и выполнять запрос
-  // pageNum и pageLimit также записывать в searchParams
-  // ageRating, countries.name, year записывать в searchParams при выполнении формы, превентив дефолт
-  // при изменении searchParams (скорее всего в эффекте) фетчить новый запрос
 
   const [search, setSearch] = useState("");
   const debouncedSearch = useDebounce(search);
   const { dispatch } = useSearch();
-
-  // setSearchParams({ limit: 20 });
 
   useEffect(
     function () {
@@ -48,7 +41,7 @@ function Header() {
 
         dispatch({ type: "loading" });
         try {
-          const data = await fetchWithToken(url);
+          const data = await fetchWithToken(`v1.4/${url}`);
           dispatch({ type: "movies/loaded", payload: data });
         } catch {
           dispatch({

@@ -15,7 +15,7 @@ function Posters({ firstPosterUrl }) {
       try {
         setIsLoading(true);
         const data = await fetchWithToken(
-          `image?page=${page}&limit=250&selectFields=url&movieId=${id}`
+          `v1.4/image?page=${page}&limit=250&selectFields=url&movieId=${id}`
         );
         const postersArray = data.docs;
         totalPosters = data.total;
@@ -77,7 +77,13 @@ function Posters({ firstPosterUrl }) {
                   poster.url || "https://st.kp.yandex.net/images/no-poster.gif"
                 }
                 alt="Poster"
-                style={{ height: "100%", maxWidth: "100vw", maxHeight: "60vh" }}
+                style={{
+                  height: "auto",
+                  width: "auto",
+                  maxWidth: "100%",
+                  maxHeight: "60vw",
+                  alignSelf: "center",
+                }}
               />
             </div>
           ))}
