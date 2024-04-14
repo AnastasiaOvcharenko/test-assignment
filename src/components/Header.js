@@ -20,7 +20,7 @@ function Header() {
               searchParams.get("page") ? searchParams.get("page") : 1
             }&limit=${
               searchParams.get("limit") ? searchParams.get("limit") : 10
-            }&query=${debouncedSearch || searchParams.get("query")}`
+            }&query=${searchParams.get("query")}`
           : `movie?page=${
               searchParams.get("page") ? searchParams.get("page") : 1
             }&limit=${
@@ -56,7 +56,7 @@ function Header() {
         searchParams.get("ageRating")) &&
         fetchMovies();
     },
-    [debouncedSearch, searchParams]
+    [searchParams]
   );
 
   useEffect(
