@@ -10,6 +10,7 @@ function Episodes({ season }) {
   const [isLoading, setIsLoading] = useState(false);
   const [page, setPage] = useState(1);
 
+  // console.log(currentMovie);
   const { width, height } = useWindow();
 
   function getLimit() {
@@ -28,7 +29,8 @@ function Episodes({ season }) {
         const data = await fetchWithToken(
           `v1.4/season?page=${page}&limit=3&movieId=${currentMovie.id}&number=${season}`
         );
-        setEpisodes(data.docs[0].episodes);
+        // console.log(data?.docs[0]);
+        setEpisodes(data?.docs[0]?.episodes);
       } catch (err) {
         console.log(err.message);
         throw new Error();

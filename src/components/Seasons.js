@@ -26,6 +26,15 @@ function Seasons() {
     fetchTotalSeasons();
   }, []);
 
+  console.log(totalSeasons);
+
+  if (totalSeasons == 0)
+    return (
+      <h1 className="primary" style={{ margin: "3.6rem 0" }}>
+        Информация о сезонах отсутствует
+      </h1>
+    );
+
   return (
     <section style={{ margin: "6rem 0" }}>
       <h1 className="primary">Сезоны и эпизоды</h1>
