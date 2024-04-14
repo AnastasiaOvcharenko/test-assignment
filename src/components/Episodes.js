@@ -29,8 +29,6 @@ function Episodes({ season }) {
           `v1.4/season?page=${page}&limit=3&movieId=${currentMovie.id}&number=${season}`
         );
         setEpisodes(data.docs[0].episodes);
-        console.log(data.docs[0].episodes);
-        //   setTotalEpisodes(data.total);
       } catch (err) {
         console.log(err.message);
         throw new Error();

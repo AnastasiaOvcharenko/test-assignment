@@ -1,12 +1,8 @@
 import React from "react";
 import { useSearch } from "../context/SearchProvider";
-import { useParams } from "react-router-dom";
 
 function MovieInfo() {
   const { currentMovie } = useSearch();
-  // const { id } = useParams();
-
-  console.log(currentMovie);
 
   return (
     <section style={{ margin: "0 3.2rem 6rem 3.2rem" }}>

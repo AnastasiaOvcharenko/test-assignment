@@ -81,7 +81,7 @@ function Posters({ firstPosterUrl }) {
                   height: "auto",
                   width: "auto",
                   maxWidth: "100%",
-                  maxHeight: "60vw",
+                  maxHeight: "25vw",
                   alignSelf: "center",
                 }}
               />

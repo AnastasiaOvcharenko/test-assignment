@@ -1,15 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { fetchWithToken, useSearch } from "../context/SearchProvider";
-import { Input, Tabs } from "antd";
+import { Tabs } from "antd";
 import Episodes from "./Episodes";
 
 function Seasons() {
   const { currentMovie } = useSearch();
   const [isLoading, setIsLoading] = useState(false);
   const [totalSeasons, setTotalSeasons] = useState([]);
-
-  //   console.log(totalSeasons);
-  //   console.log(totalEpisodes)
 
   useEffect(function () {
     const fetchTotalSeasons = async function () {

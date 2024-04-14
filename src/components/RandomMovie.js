@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Button, Form, Input, Space, Slider, DatePicker, Select } from "antd";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { Button, Form, Space, Slider, DatePicker, Select } from "antd";
+import { useNavigate } from "react-router-dom";
 import { fetchWithToken } from "../context/SearchProvider";
 import Navbar from "./Navbar";
 
