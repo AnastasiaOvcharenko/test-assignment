@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Card, Col, Row, Pagination } from "antd";
-import { useSearch } from "../context/SearchProvider";
+import { fetchWithToken, useSearch } from "../context/SearchProvider";
 import Review from "./Review";
 import useWindow from "../hooks/useWindow";
 
@@ -26,18 +26,10 @@ function Reviews() {
       const fetchReviews = async function () {
         setIsLoading(true);
         try {
-          const res = await fetch(
-            `https://api.kinopoisk.dev/v1.4/review?page=${page}&limit=${limit}&movieId=${currentMovie.id}`,
-            {
-              method: "GET",
-              headers: {
-                "X-API-KEY": process.env.REACT_APP_TOKEN,
-              },
-            }
+          const data = await fetchWithToken(
+            `review?page=${page}&limit=${limit}&movieId=${currentMovie.id}`
           );
-          const data = await res.json();
           setReviews(data.docs);
-          // console.log(data.total);
           setTotalReviews(data.total);
         } catch {
           throw new Error();
@@ -55,33 +47,15 @@ function Reviews() {
     setPage(page);
   }
 
+  if (reviews.length === 0)
+    return <h1 className="primary">Отзывы отсутствуют</h1>;
+
   return (
-    <section>
+    <section style={{ margin: "6rem 0" }}>
       <h1 className="primary">Отзывы</h1>
       <Row gutter={16} style={{ margin: "1.8rem 0" }}>
         {reviews.map((review) => (
           <Review review={review} limit={limit} key={review.id} />
-          // <Col span={8} key={review.id}>
-          //   <Card
-          //     title={review.title}
-          //     bordered={false}
-          //     // extra={<span style={{ backgroundColor: "green" }}>8</span>}
-          //   >
-          //     <p style={{ width: "100%" }}>
-          //       {review.review.slice(0, 255)}...{" "}
-          //       <button
-          //         style={{
-          //           backgroundColor: "transparent",
-          //           border: "none",
-          //           color: "blue",
-          //           cursor: "pointer",
-          //         }}
-          //       >
-          //         Смотреть целиком
-          //       </button>
-          //     </p>
-          //   </Card>
-          // </Col>
         ))}
       </Row>
       <div style={{ display: "flex", justifyContent: "center" }}>

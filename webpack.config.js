@@ -49,4 +49,3 @@ module.exports = (env) => {
   };
 };
 
-console.log(process.env.TOKEN);

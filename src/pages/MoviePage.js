@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 
 import { useParams } from "react-router-dom";
-import { useSearch } from "../context/SearchProvider";
+import { fetchWithToken, useSearch } from "../context/SearchProvider";
 import MovieInfo from "../components/MovieInfo";
 import Posters from "../components/Posters";
 import Actors from "../components/Actors";
@@ -9,6 +9,7 @@ import Reviews from "../components/Reviews";
 import SimilarMovies from "../components/SimilarMovies";
 import Seasons from "../components/Seasons";
 import ButtonBack from "../components/ButtonBack";
+import Navbar from "../components/Navbar";
 
 function MoviePage() {
   let { id } = useParams();
@@ -19,16 +20,7 @@ function MoviePage() {
       const fetchMovieData = async function () {
         dispatch({ type: "loading" });
         try {
-          const res = await fetch(
-            `https://api.kinopoisk.dev/v1.4/movie/${id}`,
-            {
-              method: "GET",
-              headers: {
-                "X-API-KEY": process.env.REACT_APP_TOKEN,
-              },
-            }
-          );
-          const data = await res.json();
+          const data = await fetchWithToken(`movie/${id}`);
           dispatch({ type: "movieData/loaded", payload: data });
         } catch {
           dispatch({
@@ -41,26 +33,30 @@ function MoviePage() {
     [id]
   );
 
-  if (isLoading) return <h1>Loading...</h1>;
+  if (isLoading) return <p>Загрузка...</p>;
+
   return (
-    <main>
-      <ButtonBack />
-      {currentMovie.id && (
-        <>
-          <Posters
-            firstPosterUrl={
-              currentMovie.poster?.url ||
-              "https://st.kp.yandex.net/images/no-poster.gif"
-            }
-          />
-          <MovieInfo />
-          <SimilarMovies />
-          <Actors />
-          <Reviews />
-          {currentMovie.isSeries && <Seasons />}{" "}
-        </>
-      )}
-    </main>
+    <>
+      <Navbar />
+      <main>
+        <ButtonBack />
+        {currentMovie.id && (
+          <>
+            <Posters
+              firstPosterUrl={
+                currentMovie.poster?.url ||
+                "https://st.kp.yandex.net/images/no-poster.gif"
+              }
+            />
+            <MovieInfo />
+            <SimilarMovies />
+            <Actors />
+            <Reviews />
+            {currentMovie.isSeries && <Seasons />}{" "}
+          </>
+        )}
+      </main>
+    </>
   );
 }
 

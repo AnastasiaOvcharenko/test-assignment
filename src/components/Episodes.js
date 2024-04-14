@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { useSearch } from "../context/SearchProvider";
+import { fetchWithToken, useSearch } from "../context/SearchProvider";
 import { Card, Col, Row, Pagination } from "antd";
+import useWindow from "../hooks/useWindow";
 
 function Episodes({ season }) {
   const { currentMovie } = useSearch();
@@ -9,20 +10,24 @@ function Episodes({ season }) {
   const [isLoading, setIsLoading] = useState(false);
   const [page, setPage] = useState(1);
 
+  const { width, height } = useWindow();
+
+  function getLimit() {
+    if (width >= 1200) return 4;
+    if (width >= 950) return 3;
+    if (width >= 650) return 2;
+    if (width < 650) return 1;
+  }
+
+  const limit = getLimit();
+
   useEffect(function () {
     const fetchEpisodes = async function () {
       setIsLoading(true);
       try {
-        const res = await fetch(
-          `https://api.kinopoisk.dev/v1.4/season?page=${page}&limit=3&movieId=${currentMovie.id}&number=${season}`,
-          {
-            method: "GET",
-            headers: {
-              "X-API-KEY": process.env.REACT_APP_TOKEN,
-            },
-          }
+        const data = await fetchWithToken(
+          `season?page=${page}&limit=3&movieId=${currentMovie.id}&number=${season}`
         );
-        const data = await res.json();
         setEpisodes(data.docs[0].episodes);
         console.log(data.docs[0].episodes);
         //   setTotalEpisodes(data.total);
@@ -50,10 +55,11 @@ function Episodes({ season }) {
         <Row gutter={16} style={{ marginBottom: "1.2rem" }}>
           {episodes
             .filter(
-              (ep) => ep.number >= (page - 1) * 3 + 1 && ep.number <= page * 3
+              (ep) =>
+                ep.number >= (page - 1) * limit + 1 && ep.number <= page * limit
             )
             .map((ep) => (
-              <Col span={8}>
+              <Col span={24 / limit} key={ep.number}>
                 <Card bordered={false}>
                   <p>
                     Эпизод {ep.number}: {ep.name}

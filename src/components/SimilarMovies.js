@@ -11,7 +11,7 @@ function SimilarMovies() {
   const { width, height } = useWindow();
 
   function getLimit() {
-    if (width >= 1200) return 6;
+    if (width >= 1250) return 6;
     if (width >= 768) return 3;
     if (width >= 480) return 2;
     if (width < 480) return 1;
@@ -26,6 +26,12 @@ function SimilarMovies() {
   function handlePrev() {
     curSlide > 0 && setCurSlide((cur) => cur - 1);
   }
+
+  if (isLoading) return <p>Загрузка...</p>;
+
+  if (currentMovie.similarMovies.length === 0)
+    return <h1 className="primary">Похожие фильмы отсутствуют</h1>;
+
   return (
     <>
       <section
@@ -36,7 +42,7 @@ function SimilarMovies() {
         }}
       >
         <h1 className="primary">Похожие фильмы</h1>
-        {isLoading && <h1>Loading...</h1>}
+        {/* {isLoading && <h1>Loading...</h1>} */}
         <div
           style={{
             display: "flex",

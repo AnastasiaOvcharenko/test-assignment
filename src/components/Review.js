@@ -18,21 +18,22 @@ function Review({ review, limit }) {
     <>
       <Col span={24 / limit} key={review.id}>
         <Card
-          style={{ height: "45vh" }}
+          style={{ height: "50vh" }}
           title={
-            <>
-              <p>
-                {review.title?.slice(0, 38)}
-                {review.title?.length > 38 && "..."}
-              </p>
+            <div style={{ margin: "1.2rem" }}>
+              <div style={{ overflow: "hidden" }}>
+                <p>{review.title}</p>
+              </div>
               <strong>Автор: {review.author}</strong>
-            </>
+            </div>
           }
           bordered={false}
         >
-          <p style={{ width: "100%" }}>{review.review.slice(0, 225)}... </p>
+          <div style={{ width: "100%", height: "24vh", overflow: "hidden" }}>
+            <p>{review.review}... </p>
+          </div>
           <Button type="link" onClick={showModal}>
-            Показать полностью
+            Показать отзыв полностью
           </Button>
         </Card>
       </Col>

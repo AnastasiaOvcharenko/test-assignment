@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useSearch } from "../context/SearchProvider";
+import { fetchWithToken, useSearch } from "../context/SearchProvider";
 import useDebounce from "../hooks/useDebounce";
 import { Input, Tabs } from "antd";
 import FiltersForm from "./FiltersForm";
@@ -23,12 +23,12 @@ function Header() {
     function () {
       const fetchMovies = async function () {
         const url = searchParams.get("query")
-          ? `https://api.kinopoisk.dev/v1.4/movie/search?page=${
+          ? `movie/search?page=${
               searchParams.get("page") ? searchParams.get("page") : 1
             }&limit=${
               searchParams.get("limit") ? searchParams.get("limit") : 10
             }&query=${debouncedSearch || searchParams.get("query")}`
-          : `https://api.kinopoisk.dev/v1.4/movie?page=${
+          : `movie?page=${
               searchParams.get("page") ? searchParams.get("page") : 1
             }&limit=${
               searchParams.get("limit") ? searchParams.get("limit") : 10
@@ -48,18 +48,7 @@ function Header() {
 
         dispatch({ type: "loading" });
         try {
-          const res = await fetch(
-            // ` https://api.kinopoisk.dev/v1.4/movie/search?page=1&limit=10&query=${debouncedSearch}`,
-            url,
-            {
-              method: "GET",
-              headers: {
-                "X-API-KEY": process.env.REACT_APP_TOKEN,
-              },
-            }
-          );
-          console.log(url);
-          const data = await res.json();
+          const data = await fetchWithToken(url);
           dispatch({ type: "movies/loaded", payload: data });
         } catch {
           dispatch({

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Pagination, Card, Col, Row } from "antd";
-import { useSearch } from "../context/SearchProvider";
+import { fetchWithToken, useSearch } from "../context/SearchProvider";
 import useWindow from "../hooks/useWindow";
 function Actors() {
   const { currentMovie } = useSearch();
@@ -25,16 +25,9 @@ function Actors() {
       const fetchActors = async function () {
         setIsLoading(true);
         try {
-          const res = await fetch(
-            `https://api.kinopoisk.dev/v1.4/person?page=${page}&limit=${limit}&movies.id=${currentMovie.id}&movies.enProfession=actor`,
-            {
-              method: "GET",
-              headers: {
-                "X-API-KEY": process.env.REACT_APP_TOKEN,
-              },
-            }
+          const data = await fetchWithToken(
+            `person?page=${page}&limit=${limit}&movies.id=${currentMovie.id}&movies.enProfession=actor`
           );
-          const data = await res.json();
           setActors(data.docs);
           setTotalActors(data.total);
         } catch {
@@ -53,7 +46,11 @@ function Actors() {
     setPage(page);
   }
 
-  // }
+  if (isLoading) return <p>Загрузка...</p>;
+
+  if (actors.length === 0)
+    return <h1 className="primary">Информация об актерах отсутствует</h1>;
+
   return (
     <div style={{ margin: "3.6rem 0" }}>
       <section style={{ margin: "6.4rem 0" }}>
@@ -61,7 +58,7 @@ function Actors() {
         <Row gutter={16} style={{ margin: "2.4rem" }}>
           {actors.length &&
             actors.map((person) => (
-              <Col span={24 / limit}>
+              <Col span={24 / limit} key={person.id}>
                 <Card
                   cover={
                     <div

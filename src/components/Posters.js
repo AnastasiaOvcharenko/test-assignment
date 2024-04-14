@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { ButtonNext, ButtonPrev } from "./SliderButtons";
+import { fetchWithToken } from "../context/SearchProvider";
 function Posters({ firstPosterUrl }) {
   const { id } = useParams();
   const [posters, setPosters] = useState([{ url: firstPosterUrl, id: 1 }]);
@@ -13,16 +14,9 @@ function Posters({ firstPosterUrl }) {
     const fetchPosters = async function (page) {
       try {
         setIsLoading(true);
-        const res = await fetch(
-          `https://api.kinopoisk.dev/v1.4/image?page=${page}&limit=250&selectFields=url&movieId=${id}`,
-          {
-            method: "GET",
-            headers: {
-              "X-API-KEY": process.env.REACT_APP_TOKEN,
-            },
-          }
+        const data = await fetchWithToken(
+          `image?page=${page}&limit=250&selectFields=url&movieId=${id}`
         );
-        const data = await res.json();
         const postersArray = data.docs;
         totalPosters = data.total;
         temporaryPosters.push(...postersArray);
@@ -51,7 +45,7 @@ function Posters({ firstPosterUrl }) {
     curImg !== 0 && setCurImg((cur) => cur - 1);
   }
 
-  if (isLoading) return <h1>Is loading...</h1>;
+  if (isLoading) return <p>Загрузка...</p>;
 
   return (
     <>

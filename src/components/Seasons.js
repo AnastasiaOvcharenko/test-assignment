@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useSearch } from "../context/SearchProvider";
+import { fetchWithToken, useSearch } from "../context/SearchProvider";
 import { Input, Tabs } from "antd";
 import Episodes from "./Episodes";
 
@@ -15,17 +15,9 @@ function Seasons() {
     const fetchTotalSeasons = async function () {
       setIsLoading(true);
       try {
-        const res = await fetch(
-          `https://api.kinopoisk.dev/v1.4/season?page=1&limit=250&movieId=${currentMovie.id}
-            `,
-          {
-            method: "GET",
-            headers: {
-              "X-API-KEY": process.env.REACT_APP_TOKEN,
-            },
-          }
+        const data = await fetchWithToken(
+          `season?page=1&limit=250&movieId=${currentMovie.id}`
         );
-        const data = await res.json();
         setTotalSeasons(data.total);
       } catch {
         throw new Error();
@@ -38,7 +30,7 @@ function Seasons() {
   }, []);
 
   return (
-    <section style={{ margin: "4.2rem 0" }}>
+    <section style={{ margin: "6rem 0" }}>
       <h1 className="primary">Сезоны и эпизоды</h1>
       <Tabs
         defaultActiveKey="1"

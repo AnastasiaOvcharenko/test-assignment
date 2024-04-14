@@ -68,4 +68,16 @@ function useSearch() {
   return context;
 }
 
-export { useSearch, SearchProvider };
+async function fetchWithToken(line) {
+  const res = await fetch(`https://api.kinopoisk.dev/v1.4/${line}`, {
+    method: "GET",
+    headers: {
+      "X-API-KEY": process.env.REACT_APP_TOKEN,
+    },
+  });
+  const data = await res.json();
+
+  return data;
+}
+
+export { useSearch, SearchProvider, fetchWithToken };

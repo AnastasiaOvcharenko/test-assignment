@@ -1,9 +1,8 @@
 import React from "react";
 import Movie from "./Movie";
 import { useSearch } from "../context/SearchProvider";
-import { Input, Pagination } from "antd";
+import { Pagination } from "antd";
 import { useSearchParams } from "react-router-dom";
-import useWindow from "../hooks/useWindow";
 
 function SearchResults() {
   const { movies, isLoading, totalMovies } = useSearch();
@@ -20,9 +19,11 @@ function SearchResults() {
 
     // console.log(page, pageSize);
   }
+
+  if (isLoading) return <p>Загрузка...</p>;
+
   return (
     <main>
-      {isLoading && <h1>Loading...</h1>}
       {!isLoading && (
         <>
           <section style={{ margin: "0 3.2rem" }}>
