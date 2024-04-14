@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { getToken } from "../env";
 import { useSearch } from "../context/SearchProvider";
 import useDebounce from "../hooks/useDebounce";
-import { Input } from "antd";
+import { Input, Tabs } from "antd";
 import FiltersForm from "./FiltersForm";
-import FiltersFormOld from "./FiltersFormOld";
 import { useSearchParams } from "react-router-dom";
 
 function Header() {
@@ -16,53 +14,120 @@ function Header() {
   // при изменении searchParams (скорее всего в эффекте) фетчить новый запрос
 
   const [search, setSearch] = useState("");
-
-  const [showFilters, setShowFilters] = useState("false");
   const debouncedSearch = useDebounce(search);
   const { dispatch } = useSearch();
+
+  // setSearchParams({ limit: 20 });
 
   useEffect(
     function () {
       const fetchMovies = async function () {
+        const url = searchParams.get("query")
+          ? `https://api.kinopoisk.dev/v1.4/movie/search?page=${
+              searchParams.get("page") ? searchParams.get("page") : 1
+            }&limit=${
+              searchParams.get("limit") ? searchParams.get("limit") : 10
+            }&query=${debouncedSearch || searchParams.get("query")}`
+          : `https://api.kinopoisk.dev/v1.4/movie?page=${
+              searchParams.get("page") ? searchParams.get("page") : 1
+            }&limit=${
+              searchParams.get("limit") ? searchParams.get("limit") : 10
+            }${
+              searchParams.get("year")
+                ? `&year=${searchParams.get("year")}`
+                : ""
+            }${
+              searchParams.get("ageRating")
+                ? `&ageRating=${searchParams.get("ageRating")}`
+                : ""
+            }${
+              searchParams.get("country")
+                ? `&countries.name=${searchParams.get("country")}`
+                : ""
+            }`;
+
         dispatch({ type: "loading" });
         try {
           const res = await fetch(
-            ` https://api.kinopoisk.dev/v1.4/movie/search?page=1&limit=10&query=${debouncedSearch}`,
+            // ` https://api.kinopoisk.dev/v1.4/movie/search?page=1&limit=10&query=${debouncedSearch}`,
+            url,
             {
               method: "GET",
               headers: {
-                "X-API-KEY": getToken(),
+                "X-API-KEY": process.env.REACT_APP_TOKEN,
               },
             }
           );
+          console.log(url);
           const data = await res.json();
-          dispatch({ type: "movies/loaded", payload: data.docs });
+          dispatch({ type: "movies/loaded", payload: data });
         } catch {
           dispatch({
             type: "rejected",
           });
         }
       };
-      debouncedSearch && fetchMovies();
+
+      (searchParams.get("query") ||
+        searchParams.get("year") ||
+        searchParams.get("country") ||
+        searchParams.get("ageRating")) &&
+        fetchMovies();
+    },
+    [debouncedSearch, searchParams]
+  );
+
+  useEffect(
+    function () {
+      if (debouncedSearch) {
+        searchParams.delete("year");
+        searchParams.delete("ageRating");
+        searchParams.delete("country");
+        setSearchParams({
+          query: debouncedSearch,
+        });
+      }
     },
     [debouncedSearch]
   );
 
   return (
-    <header className="header">
-      <Input
-        // prefix={<ion-icon class="searchIcon" name="search-outline"></ion-icon>}
-        className="searchInput"
-        onChange={(e) => setSearch(e.target.value)}
-        value={search}
-        style={{ padding: "0 2.4rem" }}
-        placeholder="Введите запрос..."
+    <header
+      style={{
+        margin: "2.4rem 0",
+      }}
+    >
+      <Tabs
+        defaultActiveKey="1"
+        style={{ width: "100%" }}
+        centered
+        items={[
+          {
+            label: <span style={{ color: "white" }}>Поиск по названию</span>,
+            key: 1,
+            children: (
+              <div style={{ display: "flex", justifyContent: "center" }}>
+                <Input
+                  style={{
+                    border: "none",
+                    width: "50%",
+                    borderRadius: "20px",
+                    height: "4.2rem",
+                  }}
+                  onChange={(e) => setSearch(e.target.value)}
+                  value={search}
+                  placeholder="Введите запрос..."
+                />
+              </div>
+            ),
+          },
+          {
+            label: <span style={{ color: "white" }}>Фильтрация фильмов</span>,
+            key: 2,
+            children: <FiltersForm />,
+          },
+        ]}
       />
-      <button onClick={() => setShowFilters((s) => !s)}>
-        Установить фильтры
-      </button>
-      {showFilters && <FiltersForm />}
-      {/* <FiltersFormOld /> */}
     </header>
   );
 }

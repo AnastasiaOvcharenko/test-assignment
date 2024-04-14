@@ -4,23 +4,62 @@ import { useParams } from "react-router-dom";
 
 function MovieInfo() {
   const { currentMovie } = useSearch();
-  const { id } = useParams();
-  // console.log(id);
+  // const { id } = useParams();
+
   return (
-    <section className="movieInfo">
-      <p className="movieInfoRating">
+    <section style={{ margin: "0 3.2rem" }}>
+      <p style={{ fontSize: "1.6rem", margin: "3rem 0" }}>
         Рейтинг на Кинопоиске:
-        <span className="movieInfoRatingEm">
+        <span
+          style={{
+            backgroundColor: `${
+              currentMovie.rating?.kp >= 7
+                ? "green"
+                : currentMovie.rating?.kp >= 4 && currentMovie.rating?.kp < 7
+                ? "yellow"
+                : currentMovie.rating?.kp < 4
+                ? "red"
+                : ""
+            }`,
+            padding: "0.4rem 0.8rem",
+            margin: "0.8rem 0",
+            borderRadius: "11px",
+          }}
+        >
           <strong>{currentMovie.rating?.kp}</strong>
         </span>
       </p>
-      <h1 className="movieInfoPrimary">{currentMovie.name}</h1>
-      <div className="movieInfoContainer">
-        <div className="movieInfoDesc">
+      <h1
+        style={{ letterSpacing: "1px", fontWeight: "700", fontSize: "2.8rem" }}
+      >
+        {currentMovie.name}
+      </h1>
+      <div style={{ display: "flex", justifyContent: "space-between" }}>
+        <div
+          style={{
+            fontSize: "1.8rem",
+            margin: "1.6rem 0",
+            lineHeight: "1.5",
+            letterSpacing: "0.2px",
+            width: "65%",
+          }}
+        >
           <p>{currentMovie.description}</p>
         </div>
-        <div className="movieInfoDetails">
-          <p>Жанры:</p>
+        <div
+          style={{
+            margin: "1.6rem 0",
+            fontSize: "1.8rem",
+            fontWeight: "600",
+            color: "#8a8a8a",
+            display: "flex",
+            flexDirection: "column",
+            gap: "1.6rem",
+          }}
+        >
+          <p>
+            Жанры: {currentMovie?.genres?.map((genre) => genre.name).join(", ")}
+          </p>
           <p>Год выпуска: {currentMovie.year}</p>
           {currentMovie.ageRating && (
             <p>Ограничение: {currentMovie.ageRating}+</p>

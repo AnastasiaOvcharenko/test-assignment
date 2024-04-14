@@ -1,16 +1,19 @@
 import { useNavigate } from "react-router-dom";
 import React from "react";
+import { Button } from "antd";
 
 function ButtonBack() {
   const navigate = useNavigate();
+
+  function handleBack(e) {
+    e.preventDefault;
+    navigate(-1);
+  }
+
   return (
-    <button
-      className="btn back"
-      style={{ margin: "1.2rem 0" }}
-      onClick={() => navigate(-1)}
-    >
-      &larr; Вернуться к поиску
-    </button>
+    <Button style={{ margin: "1.2rem" }} onClick={handleBack}>
+      &larr; Назад
+    </Button>
   );
 }
 

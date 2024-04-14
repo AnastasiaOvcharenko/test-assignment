@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { Button, Form, Input, Space } from "antd";
+import { Button, Form, Input, Space, Slider, DatePicker } from "antd";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { getToken } from "../env";
 
+const { RangePicker } = DatePicker;
 const formItemLayout = { labelCol: { span: 24 }, wrapperCol: { span: 24 } };
 const buttonItemLayout = { wrapperCol: { span: 14 } };
 
@@ -12,55 +13,28 @@ function FiltersForm() {
   let [searchParams, setSearchParams] = useSearchParams();
   const [form] = Form.useForm();
 
-  useEffect(
-    function () {
-      const url = `https://api.kinopoisk.dev/v1.4/movie?page=1&limit=10${
-        searchParams.get("year") ? `&year=${searchParams.get("year")}` : ""
-      }${
-        searchParams.get("ageRating")
-          ? `&ageRating=${searchParams.get("ageRating")}`
-          : ""
-      }${
-        searchParams.get("country")
-          ? `&country=${searchParams.get("country")}`
-          : ""
-      }`;
+  const marks = {
+    0: <label style={{ color: "white" }}>0</label>,
+    6: <label style={{ color: "white" }}>6</label>,
+    12: <label style={{ color: "white" }}>12</label>,
+    16: <label style={{ color: "white" }}>16</label>,
+    18: <label style={{ color: "white" }}>18</label>,
+  };
 
-      // console.log(url);
-
-      const fetchSearch = async function () {
-        // dispatch({ type: "loading" });
-        try {
-          const res = await fetch(url, {
-            method: "GET",
-            headers: {
-              "X-API-KEY": getToken(),
-            },
-          });
-          const data = await res.json();
-          console.log(data);
-        } catch {}
-      };
-      fetchSearch();
-    },
-    [searchParams]
-  );
-
-  function onFinish({ year, country, ageRating }) {
-    // if (year) setSearchParams("year", `${year}`);
-    // if (country) setSearchParams("country", country);
-    // if (ageRating) setSearchParams("ageRating", ageRating);
-    // navigator(
-    //   `?year=${year ? year : ""}&country=${country ? country : ""}&ageRating=${
-    //     ageRating ? ageRating : ""
-    //   }`
-    // );
-
+  function onFinish({ year, country, ageRating, yearPicker }) {
+    const [minAge, maxAge] = ageRating ? ageRating : [0, 18];
     setSearchParams({
-      year: year ? year : "",
+      // year: year ? year : "",
+      year: yearPicker ? `${yearPicker[0].$y}-${yearPicker[1].$y}` : "",
       country: country ? country : "",
-      ageRating: ageRating ? ageRating : "",
+      ageRating: `${minAge}-${maxAge}`,
     });
+
+    // yearPicker &&
+    //   searchParams.set("year", `${yearPicker[0].$y}-${yearPicker[1].$y}`);
+    // country && searchParams.set("country", country);
+    // searchParams.set("ageRating", `${minAge}-${maxAge}`);
+    searchParams.delete("query");
   }
 
   function onReset() {
@@ -80,14 +54,31 @@ function FiltersForm() {
       >
         {/* <p>Год (пример: 1874, !2020, 2020-2024)</p> */}
         <Form.Item
-          name="year"
-          label={
-            <span style={{ color: "white" }}>
-              Год (пример: 1874, !2020, 2020-2024)
-            </span>
-          }
+          name="ageRating"
+          label={<span style={{ color: "white" }}>Возраст</span>}
         >
-          <Input />
+          <Slider
+            range
+            min={0}
+            max={18}
+            defaultValue={[0, 18]}
+            marks={marks}
+            style={{ color: "white" }}
+          />
+        </Form.Item>
+        <Form.Item
+          name="yearPicker"
+          label={<span style={{ color: "white" }}>Год</span>}
+        >
+          <RangePicker
+            style={{ width: "100%" }}
+            picker="year"
+            id={{
+              start: "startYear",
+              end: "endYear",
+            }}
+            placeholder={["От", "До"]}
+          />
         </Form.Item>
         <Form.Item
           name="country"
@@ -99,17 +90,6 @@ function FiltersForm() {
         >
           <Input />
         </Form.Item>
-        <Form.Item
-          name="ageRating"
-          label={
-            <span style={{ color: "white" }}>
-              Возраст (пример: 12, !18, 12-18)
-            </span>
-          }
-        >
-          <Input />
-        </Form.Item>
-
         <Form.Item
           {...buttonItemLayout}
           style={{ display: "flex", justifyContent: "center" }}

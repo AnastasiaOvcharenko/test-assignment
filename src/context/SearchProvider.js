@@ -4,6 +4,7 @@ const SearchContext = createContext();
 
 const initialState = {
   movies: [],
+  totalMovies: 0,
   query: "",
   isLoading: false,
   resultsPerPage: 10,
@@ -13,7 +14,12 @@ const initialState = {
 function reducer(state, action) {
   switch (action.type) {
     case "movies/loaded":
-      return { ...state, movies: action.payload, isLoading: false };
+      return {
+        ...state,
+        movies: action.payload.docs,
+        totalMovies: action.payload.total,
+        isLoading: false,
+      };
     case "movieData/loaded":
       return { ...state, currentMovie: action.payload, isLoading: false };
     case "loading":
@@ -25,7 +31,15 @@ function reducer(state, action) {
 
 function SearchProvider({ children }) {
   const [
-    { movies, query, isLoading, resultsPerPage, error, currentMovie },
+    {
+      movies,
+      query,
+      isLoading,
+      resultsPerPage,
+      error,
+      currentMovie,
+      totalMovies,
+    },
     dispatch,
   ] = useReducer(reducer, initialState);
 
@@ -39,6 +53,7 @@ function SearchProvider({ children }) {
         dispatch,
         error,
         currentMovie,
+        totalMovies,
       }}
     >
       {children}

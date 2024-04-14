@@ -16,7 +16,10 @@ module.exports = (env) => {
         template: "src/index.html", // to import index.html file inside index.js
       }),
       new webpack.DefinePlugin({
-        "process.env.token": JSON.stringify(process.env.token),
+        "process.env.REACT_APP_TOKEN": JSON.stringify(process.env.TOKEN),
+      }),
+      new webpack.ProvidePlugin({
+        process: "process/browser.js",
       }),
     ],
     devServer: {
@@ -45,3 +48,5 @@ module.exports = (env) => {
     },
   };
 };
+
+console.log(process.env.TOKEN);
