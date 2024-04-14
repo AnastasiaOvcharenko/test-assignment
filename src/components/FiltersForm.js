@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Button, Form, Input, Space, Slider, DatePicker, Select } from "antd";
-import { useNavigate, useSearchParams } from "react-router-dom";
-import { getToken } from "../env";
+import { Button, Form, Space, Slider, DatePicker, Select } from "antd";
+import { useSearchParams } from "react-router-dom";
 import { fetchWithToken } from "../context/SearchProvider";
 
 const { RangePicker } = DatePicker;
